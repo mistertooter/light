@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pull Cord Lamp</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #07111f;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* Instagram-friendly 3:4 stage */
+.scene {
+  position: relative;
+  width: min(90vw, 600px);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 50% 25%, #183450 0%, #091725 45%, #03070d 100%);
+  box-shadow: 0 25px 70px #000;
+}
+
+/* Stars / decorative dots */
+.star {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: white;
+  opacity: 0.3;
+  animation: twinkle 2s infinite alternate;
+}
+
+.star:nth-child(1) { left: 12%; top: 14%; }
+.star:nth-child(2) { left: 80%; top: 20%; animation-delay: .5s; }
+.star:nth-child(3) { left: 18%; top: 45%; animation-delay: 1s; }
+.star:nth-child(4) { left: 87%; top: 52%; animation-delay: 1.4s; }
+
+@keyframes twinkle {
+  to {
+    opacity: 1;
+    transform: scale(1.8);
+  }
+}
+
+/* Lamp glow */
+.glow {
+  position: absolute;
+  width: 70%;
+  height: 55%;
+  left: 15%;
+  top: 16%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgba(255, 245, 150, .75),
+    rgba(255, 176, 60, .25) 40%,
+    transparent 72%
+  );
+  filter: blur(25px);
+  opacity: 0;
+  transform: scale(.4);
+  transition: opacity .6s, transform .6s;
+  pointer-events: none;
+}
+
+/* Lamp */
+.lamp {
+  position: absolute;
+  left: 50%;
+  top: 17%;
+  transform: translateX(-50%);
+  width: 240px;
+  height: 420px;
+}
+
+.shade {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  width: 200px;
+  height: 135px;
+  background: linear-gradient(
+    135deg,
+    #ff416c,
+    #ffb347,
+    #ffe66d
+  );
+  clip-path: polygon(25% 0, 75% 0, 100% 100%, 0 100%);
+  border-radius: 18px;
+  z-index: 5;
+  box-shadow: inset 0 -15px 30px rgba(0,0,0,.25);
+}
+
+/* Bulb */
+.bulb {
+  position: absolute;
+  top: 105px;
+  left: 92px;
+  width: 56px;
+  height: 70px;
+  border-radius: 50% 50% 45% 45%;
+  background: #53606b;
+  transition: .5s;
+  z-index: 4;
+}
+
+.bulb::after {
+  content: "";
+  position: absolute;
+  bottom: -17px;
+  left: 12px;
+  width: 32px;
+  height: 24px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(
+    #777 0 4px,
+    #333 4px 8px
+  );
+}
+
+/* Lamp pole */
+.pole {
+  position: absolute;
+  top: 155px;
+  left: 114px;
+  width: 12px;
+  height: 190px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #555, #ddd, #444);
+}
+
+.base {
+  position: absolute;
+  top: 335px;
+  left: 58px;
+  width: 125px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(#aaa, #333);
+  box-shadow: 0 15px 25px rgba(0,0,0,.5);
+}
+
+/* Pull cord */
+.cord-wrapper {
+  position: absolute;
+  top: 113px;
+  left: 166px;
+  width: 50px;
+  height: 210px;
+  transform-origin: top center;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.cord {
+  position: absolute;
+  left: 24px;
+  width: 3px;
+  height: 155px;
+  background: #e5d9c8;
+  box-shadow: 0 0 4px #000;
+}
+
+.handle {
+  position: absolute;
+  left: 13px;
+  top: 150px;
+  width: 25px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00e5ff, #7c4dff);
+  box-shadow: 0 0 15px rgba(0,229,255,.7);
+}
+
+/* Text */
+.message {
+  position: absolute;
+  bottom: 7%;
+  width: 100%;
+  text-align: center;
+  color: #8fa4b5;
+  letter-spacing: 3px;
+  font-size: 18px;
+  transition: .4s;
+}
+
+.status {
+  display: block;
+  margin-top: 10px;
+  color: #ff5577;
+  font-weight: bold;
+}
+
+/* ON state */
+.scene.on .glow {
+  opacity: 1;
+  transform: scale(1);
+  animation: breathe 2.5s infinite alternate;
+}
+
+.scene.on .bulb {
+  background: #fffbd1;
+  box-shadow:
+    0 0 15px white,
+    0 0 35px #ffe66d,
+    0 0 70px #ffb347;
+}
+
+.scene.on .shade {
+  filter: brightness(1.35);
+  box-shadow:
+    inset 0 -15px 35px rgba(255,255,180,.5),
+    0 0 30px rgba(255,185,70,.6);
+}
+
+.scene.on .status {
+  color: #ffe66d;
+  text-shadow: 0 0 15px #ffb347;
+}
+
+@keyframes breathe {
+  from {
+    opacity: .75;
+    transform: scale(.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Cord pull animation */
+.pull {
+  animation: pullCord .55s ease-in-out;
+}
+
+@keyframes pullCord {
+  0%   { transform: rotate(0deg) translateY(0); }
+  35%  { transform: rotate(8deg) translateY(35px); }
+  65%  { transform: rotate(-6deg) translateY(8px); }
+  100% { transform: rotate(0deg) translateY(0); }
+}
+
+/* Floor */
+.floor {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 22%;
+  background:
+    linear-gradient(
+      rgba(20,30,40,.4),
+      rgba(0,0,0,.8)
+    ),
+    repeating-linear-gradient(
+      90deg,
+      #17202a 0 70px,
+      #111820 70px 72px
+    );
+}
+
+.scene.on .floor {
+  background:
+    radial-gradient(
+      ellipse at center top,
+      rgba(255,196,80,.28),
+      transparent 55%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      #202832 0 70px,
+      #111820 70px 72px
+    );
+}
+</style>
+</head>
+
+<body>
+
+<div class="scene" id="scene">
+
+  <div class="star"></div>
+  <div class="star"></div>
+  <div class="star"></div>
+  <div class="star"></div>
+
+  <div class="glow"></div>
+
+  <div class="lamp">
+
+    <div class="shade"></div>
+
+    <div class="bulb"></div>
+
+    <div class="pole"></div>
+
+    <div class="base"></div>
+
+    <div class="cord-wrapper" id="cord">
+      <div class="cord"></div>
+      <div class="handle"></div>
+    </div>
+
+  </div>
+
+  <div class="floor"></div>
+
+  <div class="message">
+    PULL THE CORD
+    <span class="status" id="status">LIGHT OFF</span>
+  </div>
+
+</div>
+
+<script>
+
+const scene = document.getElementById("scene");
+const cord = document.getElementById("cord");
+const statusText = document.getElementById("status");
+
+let lightOn = false;
+
+cord.addEventListener("click", toggleLamp);
+cord.addEventListener("touchstart", toggleLamp);
+
+function toggleLamp(event) {
+
+  event.preventDefault();
+
+  // Restart pull animation
+  cord.classList.remove("pull");
+  void cord.offsetWidth;
+  cord.classList.add("pull");
+
+  // Wait until the cord has been pulled downward
+  setTimeout(() => {
+
+    lightOn = !lightOn;
+
+    scene.classList.toggle("on", lightOn);
+
+    statusText.textContent =
+      lightOn ? "LIGHT ON" : "LIGHT OFF";
+
+    playClick();
+
+  }, 180);
+}
+
+/* Generate switch-click sound without audio files */
+function playClick() {
+
+  const AudioContext =
+    window.AudioContext ||
+    window.webkitAudioContext;
+
+  const audio = new AudioContext();
+
+  const oscillator = audio.createOscillator();
+  const gain = audio.createGain();
+
+  oscillator.connect(gain);
+  gain.connect(audio.destination);
+
+  oscillator.type = "square";
+  oscillator.frequency.value = 110;
+
+  gain.gain.setValueAtTime(.12, audio.currentTime);
+
+  gain.gain.exponentialRampToValueAtTime(
+    .001,
+    audio.currentTime + .07
+  );
+
+  oscillator.start();
+  oscillator.stop(audio.currentTime + .07);
+}
+
+</script>
+
+</body>
+</html>
